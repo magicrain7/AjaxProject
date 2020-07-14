@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="jquery-3.5.1.min.js"></script>
+<script>
+	$(document).ready(function(){
+		$.ajax({
+			url: "GetEmpServlet",
+			success: function(result, status, xhr){
+				console.log(result);
+				var data = JSON.parse(result);
+				console.log(data);
+				document.write("<h2>ID: " + data[0].id + "</h2>");
+				document.write("<h2>FName: " + data[0].first_name + "</h2>");
+				document.write("<h2>Age: " + data[0].age + "</h2>");
+			}
+		});
+		
+	});
+</script>
+</head>
+<body>
+	<p id="show"></p>
+</body>
+</html>
