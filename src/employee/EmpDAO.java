@@ -6,7 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EmpDAO {
 	Connection conn = null;
@@ -23,6 +25,55 @@ public class EmpDAO {
 			e.printStackTrace();
 		}
 		return conn;
+	}
+	
+	public Map<String, String> getJobCode() {
+		conn = getConnect();
+		Map<String, String> map = new HashMap<>();
+		String sql = "select job_id, job_title from jobs order by 1";
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			ResultSet rs = pstmt.executeQuery();
+			while(rs.next()) {
+				map.put(rs.getString("job_id"), rs.getString("job_title"));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return map;
+	}
+	
+	public void insertEmp(Employee emp) {
+		conn = getConnect();
+		String sql = " insert into employees (employee_id, last_name, email, hire_date,job_id)"
+				   + "values(employees_seq.nextval,?,?,?,?)";
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+//			System.out.println(emp.jobId); ORA-01400: cannot insert NULL into JOB_ID 오류나서 id값들어가는지 확인작업
+			pstmt.setString(1, emp.getLastName());
+			pstmt.setString(2, emp.getEmail());
+			pstmt.setString(3, emp.getHireDate());
+			pstmt.setString(4, emp.getJobId());
+			int r = pstmt.executeUpdate();
+			System.out.println(r + "건 입력.");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public List<Employee> getEmpList() {
