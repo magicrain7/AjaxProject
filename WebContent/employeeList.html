@@ -36,7 +36,7 @@
 					$tag += "<tr><td>" + datas[i].id 
 					     + "</td><td>" + datas[i].first_name 
 					     + "</td><td>" + datas[i].email 
-					     + "</td><td>" + datas[i].salary
+					     + "</td><td ondblclick='changeFunc(this)'>" + datas[i].salary
 					     + "</td><td> <button onclick='delFunc(this)'>delete</button>"
 					     + "</td></tr>";
 				}
@@ -49,8 +49,41 @@
 		});
 		
 	});
+	function valueUpdate() {
+		console.log($(this).val());
+		console.log($(this).parent().parent().children().eq(0).text());
+		var curSalary = $(this).val();
+		var curEmpId = $(this).parent().parent().children().eq(0).text();
+		$.ajax({
+			url:"UpdateEmpServlet",
+			data:{"empId": curEmpId, "salary": curSalary},
+			success: function(result, status) {
+				console.log(status);
+			}
+		});
+	}
+	function changeFunc(obj) {
+		var curValue = obj.childNodes[0].nodeValue;
+		var $input = $('<input />').attr('value', curValue);
+		$input.on('change', valueUpdate);
+		$(obj).append($input);
+		obj.childNodes[0].nodeValue="";
+	}
 	function delFunc(obj) {
+		// table > tr > td > button
+		//button 기준으로 
+		//javascript 사용할때는
+		//obj.parentNode.parentNode.remove;
+		console.log($(obj).parent().parent().children().eq(0).text());
+		var eid = $(obj).parent().parent().children().eq(0).text();
 		$(obj).parent().parent().remove();
+		$.ajax({
+			url: "DelEmpServlet",
+			data: {"eid": eid, "salary": 500}, //"eid=" + eid;
+			success: function(result, status) {
+				console.log(status);
+			}
+		});
 	}
 </script>
 </head>
