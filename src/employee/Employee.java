@@ -10,7 +10,9 @@ public class Employee {
 	String jobId;
 	
 	
-	
+	public Employee() {
+		
+	}
 	public Employee(String email, String hireDate, String lastName, String jobId) {
 		super();
 		this.email = email;

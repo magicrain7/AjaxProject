@@ -80,6 +80,53 @@ public class EmpDAO {
 		}
 	}
 	
+	public List<Employee> getAjaxData() {
+		conn = getConnect();
+		String sql = "select first_name, last_name, email, job_id," +" hire_date, salary from employees";
+		List<Employee> list = new ArrayList<>();
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			ResultSet rs = pstmt.executeQuery();
+			while(rs.next()) {
+				Employee emp = new Employee();
+				emp.setFirstName(rs.getString("first_name"));
+				emp.setLastName(rs.getString("last_name"));
+				emp.setEmail(rs.getString("email"));
+				emp.setJobId(rs.getString("job_id"));
+				emp.setHireDate(rs.getString("hire_date"));
+				emp.setSalary(rs.getInt("salary"));
+				list.add(emp);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}return list;
+	}
+	
+	public void updateEmp (String empId , String salary) {
+		conn = getConnect();
+		String sql ="update from employees set salary = ? where employee_id=" + empId;
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, salary);
+			pstmt.setString(2, empId);
+			int r = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 	public void deleteEmp(String empId) {
 		conn = getConnect();
 		String sql = "delete from employees where employee_id = " + empId;
